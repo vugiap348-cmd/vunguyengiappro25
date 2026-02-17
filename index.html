@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đề Kiểm Tra Số 26 – Lịch Sử</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c0392b;
+    --gold: #d4a017;
+    --dark: #1a1208;
+    --paper: #fdf6e3;
+    --ink: #2c1a0e;
+    --muted: #7a6a5a;
+    --green: #27ae60;
+    --blue: #2980b9;
+    --correct-bg: #eafaf1;
+    --wrong-bg: #fdf2f2;
+    --border: #d5c5a1;
+    --shadow: rgba(44,26,14,0.13);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ---- HEADER ---- */
+  header {
+    background: var(--dark);
+    color: var(--gold);
+    text-align: center;
+    padding: 28px 20px 20px;
+    border-bottom: 4px solid var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 18px var(--shadow);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  header p { font-size: 0.88rem; color: #c9a96e; margin-top: 4px; }
+
+  /* ---- TIMER ---- */
+  #timer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: #231800;
+    padding: 10px 20px;
+    position: sticky;
+    top: 90px;
+    z-index: 99;
+    border-bottom: 2px solid var(--gold);
+  }
+  #timer-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    letter-spacing: 3px;
+    min-width: 90px;
+    text-align: center;
+    transition: color 0.3s;
+  }
+  #timer-display.urgent { color: #e74c3c; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+  #timer-label { color: #c9a96e; font-size: 0.85rem; letter-spacing:1px; text-transform: uppercase; }
+  #progress-text { color: #c9a96e; font-size: 0.82rem; }
+
+  /* ---- MAIN ---- */
+  main { max-width: 900px; margin: 0 auto; padding: 30px 18px 60px; }
+
+  /* ---- SECTIONS ---- */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--red);
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 8px;
+    margin: 36px 0 22px;
+    letter-spacing: 1px;
+  }
+  .section-note {
+    background: #fff8e7;
+    border-left: 4px solid var(--gold);
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* ---- QUESTION CARD ---- */
+  .q-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 22px;
+    padding: 20px 22px 16px;
+    box-shadow: 0 2px 10px var(--shadow);
+    transition: border-color 0.2s;
+  }
+  .q-card.answered { border-color: var(--gold); }
+  .q-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 7px;
+  }
+  .q-text {
+    font-size: 0.97rem;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .q-text blockquote {
+    font-style: italic;
+    background: #fdf6e3;
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px;
+    margin: 8px 0 10px;
+    font-weight: 400;
+    font-size: 0.93rem;
+    line-height: 1.75;
+    color: #4a3322;
+    border-radius: 0 6px 6px 0;
+    white-space: pre-line;
+  }
+  .q-text .source-note {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 5px;
+    font-weight: 400;
+  }
+
+  /* ---- OPTIONS (Part 1) ---- */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--paper);
+    font-size: 0.93rem;
+    line-height: 1.55;
+  }
+  .opt:hover { border-color: var(--gold); background: #fffbf0; }
+  .opt input[type="radio"] { margin-top: 3px; accent-color: var(--gold); flex-shrink: 0; }
+  .opt.selected { border-color: var(--blue); background: #eef6ff; }
+  .opt.correct { border-color: var(--green) !important; background: var(--correct-bg) !important; font-weight: 600; }
+  .opt.wrong { border-color: var(--red) !important; background: var(--wrong-bg) !important; }
+  .opt.highlight-correct { border-color: var(--green) !important; background: var(--correct-bg) !important; }
+
+  /* ---- PART 2 – TRUE/FALSE ---- */
+  .tf-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  .tf-table th {
+    background: var(--dark);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    padding: 8px 12px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .tf-table td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    font-size: 0.91rem;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .tf-table tr:nth-child(even) td { background: #fdf6e3; }
+  .tf-radio-group { display: flex; gap: 14px; justify-content: center; flex-wrap: nowrap; }
+  .tf-btn {
+    padding: 5px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.83rem;
+    font-family: 'Source Serif 4', serif;
+    background: var(--paper);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .tf-btn:hover { background: #fffbf0; border-color: var(--gold); }
+  .tf-btn.selected-true { background: #eef6ff; border-color: var(--blue); color: var(--blue); font-weight: 700; }
+  .tf-btn.selected-false { background: #fff0f0; border-color: var(--red); color: var(--red); font-weight: 700; }
+  .tf-btn.correct-reveal { background: var(--correct-bg) !important; border-color: var(--green) !important; color: var(--green) !important; font-weight: 700; }
+  .tf-btn.wrong-reveal { background: var(--wrong-bg) !important; border-color: var(--red) !important; color: var(--red) !important; }
+  .tf-label { font-size: 0.72rem; display: block; margin-top: 3px; text-align: center; color: var(--muted); }
+
+  /* ---- SUBMIT BUTTON ---- */
+  #submit-btn {
+    display: block;
+    margin: 36px auto 0;
+    padding: 15px 52px;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.12rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(192,57,43,0.35);
+    transition: all 0.2s;
+  }
+  #submit-btn:hover { background: #a93226; transform: translateY(-2px); }
+  #submit-btn:disabled { background: var(--muted); cursor: default; transform: none; }
+
+  /* ---- RESULT PANEL ---- */
+  #result-panel {
+    display: none;
+    background: var(--dark);
+    color: var(--gold);
+    border-radius: 12px;
+    padding: 32px 28px 28px;
+    margin-top: 38px;
+    text-align: center;
+    box-shadow: 0 8px 32px var(--shadow);
+  }
+  #result-panel h2 { font-family: 'Playfair Display', serif; font-size: 1.9rem; margin-bottom: 10px; }
+  #result-panel .score-big { font-size: 3.5rem; font-family: 'Playfair Display', serif; color: #fff; }
+  #result-panel .score-detail { font-size: 0.9rem; color: #c9a96e; margin-top: 6px; }
+  #result-panel table { width: 100%; max-width: 480px; margin: 20px auto 0; border-collapse: collapse; }
+  #result-panel td, #result-panel th { padding: 8px 12px; border: 1px solid #4a3520; font-size: 0.88rem; }
+  #result-panel th { background: #2c1a0e; color: var(--gold); }
+  #result-panel td { color: #f0ddb0; }
+  #result-panel .btn-redo {
+    margin-top: 22px;
+    padding: 11px 36px;
+    background: var(--gold);
+    color: var(--dark);
+    border: none;
+    border-radius: 7px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  #result-panel .btn-redo:hover { background: #c9a917; }
+
+  /* ---- REVIEW INDICATOR ---- */
+  .review-mark { display: none; margin-top: 10px; padding: 7px 12px; border-radius: 6px; font-size: 0.83rem; font-weight: 600; }
+  .review-mark.correct-mark { background: var(--correct-bg); color: var(--green); display: block; border: 1px solid var(--green); }
+  .review-mark.wrong-mark { background: var(--wrong-bg); color: var(--red); display: block; border: 1px solid var(--red); }
+  .review-mark.partial-mark { background: #fff8e7; color: #b7860b; display: block; border: 1px solid var(--gold); }
+
+  /* ---- RESPONSIVE ---- */
+  @media(max-width:600px) {
+    header h1 { font-size: 1.15rem; }
+    #timer-display { font-size: 1.5rem; }
+    .q-text { font-size: 0.91rem; }
+  }
+
+  /* ===== MODAL XÁC NHẬN NỘP BÀI (XỊN) ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 18, 8, 0.6); /* --dark với độ trong suốt */
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: #fff8f0;
+    border: 3px solid var(--gold);
+    border-radius: 24px;
+    padding: 32px 28px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 30px 40px rgba(0,0,0,0.4);
+    text-align: center;
+    font-family: 'Source Serif 4', serif;
+    color: var(--ink);
+    animation: modalFadeIn 0.3s ease;
+  }
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal-icon {
+    font-size: 3.2rem;
+    background: var(--gold);
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    color: var(--dark);
+    border: 4px solid var(--dark);
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 12px;
+  }
+  .modal-message {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.6;
+    background: rgba(212, 160, 23, 0.08);
+    padding: 16px;
+    border-radius: 16px;
+    border-left: 4px solid var(--gold);
+  }
+  .modal-message strong {
+    color: var(--red);
+    font-size: 1.4rem;
+    margin: 0 4px;
+  }
+  .modal-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+  .btn-modal-cancel {
+    background: #b0a090;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: 0.2s;
+    flex: 1;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.5px;
+  }
+  .btn-modal-cancel:hover {
+    background: #9e8b78;
+    transform: translateY(-2px);
+  }
+  .btn-modal-submit {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: 0.2s;
+    flex: 1;
+    box-shadow: 0 4px 12px rgba(192,57,43,0.3);
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.5px;
+  }
+  .btn-modal-submit:hover {
+    background: #a8231a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(192,57,43,0.4);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📜 Đề Kiểm Tra Số 26 — Lịch Sử</h1>
+  <p>Trắc nghiệm nhiều lựa chọn &amp; Đúng / Sai · Thời gian: 45 phút</p>
+</header>
+
+<div id="timer-bar">
+  <span id="timer-label">⏱ Thời gian còn lại</span>
+  <span id="timer-display">45:00</span>
+  <span id="progress-text">0 / 28 câu đã làm</span>
+</div>
+
+<main>
+  <div id="quiz-form">
+
+    <!-- PHẦN I -->
+    <div class="section-title">PHẦN I — Trắc nghiệm một lựa chọn (24 câu × 0.25 điểm)</div>
+    <div class="section-note">Mỗi câu chỉ chọn <strong>một</strong> phương án đúng.</div>
+    <div id="part1-container"></div>
+
+    <!-- PHẦN II -->
+    <div class="section-title">PHẦN II — Đúng / Sai (4 câu × 1.0 điểm)</div>
+    <div class="section-note">Mỗi ý a, b, c, d chọn <strong>Đúng</strong> hoặc <strong>Sai</strong>. Thang điểm: 1 ý đúng = 0.1đ · 2 ý đúng = 0.25đ · 3 ý đúng = 0.5đ · 4 ý đúng = 1.0đ</div>
+    <div id="part2-container"></div>
+
+    <button id="submit-btn" onclick="submitQuiz()">📩 NỘP BÀI</button>
+  </div>
+
+  <div id="result-panel">
+    <h2>🏆 KẾT QUẢ</h2>
+    <div class="score-big" id="score-val"></div>
+    <div class="score-detail" id="score-detail"></div>
+    <table id="score-table">
+      <thead><tr><th>Thành phần</th><th>Điểm đạt</th><th>Tối đa</th></tr></thead>
+      <tbody id="score-tbody"></tbody>
+    </table>
+    <button class="btn-redo" onclick="redoQuiz()">🔄 Làm lại (câu hỏi tráo đổi)</button>
+  </div>
+</main>
+
+<!-- MODAL XÁC NHẬN NỘP BÀI XỊN -->
+<div class="modal-overlay" id="submitConfirmModal">
+  <div class="modal-box">
+    <div class="modal-icon">⚠️</div>
+    <div class="modal-title">Xác nhận nộp bài</div>
+    <div class="modal-message" id="modalMessage">
+      Bạn còn <strong id="modalUnansweredCount">0</strong> ý chưa làm.<br>Bạn có chắc muốn nộp không?
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-modal-cancel" id="modalCancelBtn">✖ Hủy</button>
+      <button class="btn-modal-submit" id="modalSubmitBtn">📩 Nộp bài</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+
+const PART1_ORIGINAL = [
+  {
+    id: 'p1q1',
+    text: 'Nước Vạn Xuân được thành lập (năm 544) là kết quả của cuộc khởi nghĩa do nhân vật lịch sử nào sau đây lãnh đạo?',
+    opts: ['Lý Bí.', 'Ngô Quyền.', 'Phùng Hưng.', 'Quang Trung.'],
+    answer: 0
+  },
+  {
+    id: 'p1q2',
+    text: 'Mâu thuẫn bao trùm xã hội Việt Nam trong giai đoạn 1407 đến 1428 là',
+    opts: [
+      'toàn thể nhân dân Việt Nam với nhà Minh.',
+      'giữa nhân dân và những quý tộc người Việt.',
+      'giữa quý tộc người Việt và chính quyền đô hộ.',
+      'giữa toàn thể nông dân và chính quyền đô hộ.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q3',
+    text: 'Năm 1400, Hồ Quý Ly buộc vua Trần nhường ngôi và lập ra triều đại',
+    opts: ['nhà Lê sơ.', 'nhà Nguyễn.', 'nhà Hồ.', 'nhà Lý.'],
+    answer: 2
+  },
+  {
+    id: 'p1q4',
+    text: 'Nội dung nào sau đây là một trong những nguyên nhân dẫn đến sự suy yếu của triều đại nhà Trần ở nửa sau thế kỉ XIV?',
+    opts: [
+      'Giặc Minh lăm le sang xâm lược, quân Chăm-pa tấn công.',
+      'Nhà nước không quan tâm sản xuất, quan lại ăn chơi hưởng lạc.',
+      'Chu Văn An dâng sớ chém gian thần không được chấp thuận.',
+      'Nhà Trần tiến hành nhiều cuộc chiến tranh xâm lược tốn kém.'
+    ],
+    answer: 1
+  },
+  {
+    id: 'p1q5',
+    text: 'Mục tiêu và nguyên tắc hoạt động của Liên hợp quốc được quy định bởi văn kiện quan trọng nào sau đây?',
+    opts: ['Hiến chương.', 'Hiến pháp.', 'Tuyên ngôn.', 'Hiệp định.'],
+    answer: 0
+  },
+  {
+    id: 'p1q6',
+    text: 'Nội dung nào sau đây là vai trò của Liên hợp quốc trong việc duy trì hòa bình, an ninh quốc tế?',
+    opts: [
+      'Soạn thảo và xây dựng được hệ thống các công ước quốc tế về giải trừ quân bị.',
+      'Ngăn chặn được các cuộc đối đầu Đông-Tây và xung đột trên thế giới.',
+      'Giải quyết được mọi tranh chấp, xung đột trên thế giới bằng biện pháp hòa bình.',
+      'Chấm dứt được tình trạng chạy đua vũ trang và sản xuất vũ khí hủy diệt.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q7',
+    text: 'Văn kiện nào sau đây nêu rõ mục đích thành lập của tổ chức Hiệp hội các quốc gia Đông Nam Á (ASEAN)?',
+    opts: ['Tuyên bố ASEAN.', 'Tuyên bố Ba-li I.', 'Hiến chương ASEAN.', 'Tầm nhìn ASEAN.'],
+    answer: 0
+  },
+  {
+    id: 'p1q8',
+    text: 'Nội dung nào sau đây không phải là nguyên nhân thành lập của tổ chức Hiệp hội các quốc gia Đông Nam Á (ASEAN)?',
+    opts: [
+      'Do nhu cầu hợp tác để cùng phát triển.',
+      'Trở thành đối trọng của phương Tây.',
+      'Hạn chế những ảnh hưởng từ bên ngoài.',
+      'Bài học từ những thành công của châu Âu.'
+    ],
+    answer: 1
+  },
+  {
+    id: 'p1q9',
+    text: 'AEC là tên viết tắt bằng tiếng Anh của',
+    opts: [
+      'Cộng đồng Kinh tế ASEAN.',
+      'Cộng đồng Chính trị - An ninh ASEAN.',
+      'Cộng đồng Văn hóa – Xã hội ASEAN',
+      'Hiệp hội các quốc gia Đông Nam Á.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q10',
+    text: 'Trong cuộc đấu tranh bảo vệ Tổ quốc của nhân dân Việt Nam, sự kiện nào sau đây diễn ra vào ngày 17-2-1979?',
+    opts: [
+      'Trung Quốc đưa quân đánh chiếm các đảo thuộc quần đảo Trường Sa.',
+      'Quân Khmer đỏ đánh chiếm đảo Tây Ninh, Phú Quốc, đảo Hòn Mê.',
+      'Quân Trung Quốc đánh chiếm trái phép quần đảo Hoàng Sa của Việt Nam.',
+      'Hàng chục vạn quân Trung Quốc tấn công biên giới phía Bắc Việt Nam.'
+    ],
+    answer: 3
+  },
+  {
+    id: 'p1q11',
+    text: 'Nhà nước Cộng hòa xã hội chủ nghĩa Việt Nam đã khẳng định chủ quyền của Việt Nam đối với quần đảo Hoàng Sa và Trường Sa thông qua việc',
+    opts: [
+      'thành lập huyện đảo Hoàng Sa và Trường Sa.',
+      'thành lập đội Hoàng Sa, Bắc Hải và Trường Đà.',
+      'cho hoàn thiện tập Đại Nam nhất thống toàn đồ.',
+      'cử thủy quân ra tuần tra đảo định kì hàng năm.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q12',
+    text: 'Từ cuối năm 1978, trước cuộc tấn công của quân Pôn Pốt, quân đội nhân dân Việt Nam đã có hành động nào sau đây?',
+    opts: [
+      'Mở các cuộc phản công và dừng lại ở biên giới Việt Nam - Cam-pu-chia.',
+      'Đàm phán ngoại giao, lên án hành động xâm lược của Pôn Pốt.',
+      'Tổ chức phản công, đánh bật lực lượng Pôn Pốt ra khỏi lãnh thổ.',
+      'Tích cực đấu tranh ngoại giao, cầu cứu sự viện trợ của quốc tế.'
+    ],
+    answer: 2
+  },
+  {
+    id: 'p1q13',
+    text: 'Trong quá trình bảo vệ chủ quyền quốc gia ở Biển Đông, Việt Nam đã luôn kiên định con đường',
+    opts: [
+      'đấu tranh bằng các biện pháp phù hợp với luật pháp quốc tế.',
+      'bảo vệ hoà bình, phù hợp với luật pháp khu vực và quốc tế.',
+      'bảo vệ vững chắc chủ quyền và lợi ích khu vực.',
+      'đấu tranh bằng mọi biện pháp, không đàm phán.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q14',
+    text: 'Trong đường lối đổi mới đất nước của Đảng Cộng sản Việt Nam giai đoạn 1996 - 2006, nội dung nào sau đây là một trong những chủ trương đổi mới về đối ngoại?',
+    opts: [
+      'Phát triển giáo dục - đào tạo và khoa học – công nghệ.',
+      'Cải cách tổ chức Nhà nước pháp quyền xã hội chủ nghĩa.',
+      'Xây dựng và phát triển nền văn hoá dân tộc tiên tiến.',
+      'Đặt trọng tâm chủ trương "hội nhập kinh tế quốc tế".'
+    ],
+    answer: 3
+  },
+  {
+    id: 'p1q15',
+    text: 'Thành tựu đối mới văn hoá - giáo dục ở Việt Nam (từ năm 1986) có ý nghĩa nào sau đây?',
+    opts: [
+      'Bảo tồn các giá trị văn hoá truyền thống và tạo ra các giá trị văn hoá mới tiến bộ.',
+      'Đưa Việt Nam trở thành nước đầu tiên trong khu vực phổ cập trung học phổ thông.',
+      'Sáng tạo ra các giá trị văn hoá mới, triệt tiêu hoàn toàn các tàn dư của văn hoá cũ.',
+      'Nâng cao chất lượng giáo dục, trở thành quốc gia có nền giáo dục tốt nhất châu Á.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q16',
+    text: 'Nội dung nào sau đây là một trong những hoạt động đối ngoại của Chính phủ Việt Nam Dân chủ Cộng hòa sau Cách mạng tháng Tám năm 1945?',
+    opts: [
+      'Đề nghị Liên hợp quốc công nhận Nhà nước Việt Nam Dân chủ Cộng hòa.',
+      'Liên minh với Mĩ chống Pháp quay trở lại xâm lược Việt Nam lần thứ hai.',
+      'Tham gia phe đồng minh và trở thành lực lượng đồng minh chống phát xít.',
+      'Liên minh chặt chẽ với Pháp để đánh đuổi phát xít Nhật ra khỏi nước ta.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q17',
+    text: 'Nội dung nào sau đây là đối sách ngoại giao của Chính phủ Việt Nam Dân chủ Cộng hòa đối với quân Trung Hoa Dân quốc sau Cách mạng tháng Tám năm 1945?',
+    opts: [
+      'Nhờ sự can thiệp của Mĩ buộc chúng rút khỏi nước ta.',
+      'Tiến hành thực hiện biện pháp vừa đánh vừa đàm.',
+      'Nhân nhượng có nguyên tắc về kinh tế và chính trị.',
+      'Tập trung lực lượng đánh đuổi chúng ra khỏi nước ta.'
+    ],
+    answer: 2
+  },
+  {
+    id: 'p1q18',
+    text: 'Hoạt động của Phan Châu Trinh trong thời gian ở Pháp (những năm đầu thế kỉ XX) nhằm mục đích nào sau đây?',
+    opts: [
+      'Thiết lập quan hệ với nước Pháp.',
+      'Vận động cải cách cho Việt Nam.',
+      'Nhờ Pháp để đánh đuổi Nhật Bản.',
+      'Vận động trao trả độc lập cho Việt Nam.'
+    ],
+    answer: 1
+  },
+  {
+    id: 'p1q19',
+    text: 'Năm 1987, tổ chức Giáo dục, Khoa học và Văn hóa của Liên hợp quốc (UNESCO) đã vinh danh Chủ tịch Hồ Chí Minh là',
+    opts: [
+      'Nhà khoa học xuất sắc.',
+      'Nhà hoạt động môi trường nổi tiếng.',
+      'Nhà kinh tế học lỗi lạc.',
+      'Anh hùng giải phóng dân tộc.'
+    ],
+    answer: 3
+  },
+  {
+    id: 'p1q20',
+    text: 'Trong quá trình chuẩn bị cho cách mạng tháng Tám (1941-1945), các hoạt động của Nguyễn Ái Quốc - Hồ Chí Minh đã đem lại kết quả nào sau đây?',
+    opts: [
+      'Thành lập được tổ chức lãnh đạo mọi thắng lợi của cách mạng.',
+      'Trực tiếp lãnh đạo thắng lợi phong trào Xô viết ở Nghệ - Tĩnh.',
+      'Tạo điều kiện cho thắng lợi của cuộc kháng chiến chống Pháp.',
+      'Chuẩn bị những điều kiện cơ bản cho sự bùng nổ của cách mạng.'
+    ],
+    answer: 3
+  },
+  {
+    id: 'p1q21',
+    text: 'Việt Nam đã vận dụng nguyên tắc nào sau đây của Hiến chương Liên hợp quốc để giải quyết vấn đề phức tạp ở Biển Đông hiện nay?',
+    opts: [
+      'Giải quyết các tranh chấp bằng biện pháp hòa bình.',
+      'Quyền tự quyết giữa các thành viên Liên hợp quốc.',
+      'Không đe dọa vũ lực để tấn công vào quốc gia khác.',
+      'Đảm bảo sự nhất trí của các nước thành viên thường trực.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q22',
+    text: 'Qua thực tiễn cuộc đấu tranh bảo vệ Tổ quốc ở Việt Nam từ 1945 đến nay, có thể rút ra bài học kinh nghiệm nào sau đây để phát huy sức mạnh toàn dân?',
+    opts: [
+      'Thực hiện tăng cường xây dựng, củng cố Mặt trận Tổ quốc các cấp.',
+      'Mở rộng phát triển kinh tế đối ngoại, chú trọng hướng về xuất khẩu',
+      'Tăng cường phát động các phong trào thi đua sản xuất phát triển kinh tế.',
+      'Tăng cường phát động các phong trào quyên góp giúp đỡ người nghèo.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q23',
+    text: 'Nội dung nào sau đây phản ánh đúng một bài học kinh nghiệm rút ra từ thực tiễn công cuộc Đổi mới kinh tế ở Việt Nam từ năm 1986?',
+    opts: [
+      'Thực hành và phát huy tư tưởng lấy dân làm gốc.',
+      'Luôn lấy đối mới chính trị làm tiền đề, trọng tâm.',
+      'Giảm tối đa can thiệp của nhà nước vào thị trường.',
+      'Từng bước thực hiện đa nguyên về chính trị.'
+    ],
+    answer: 0
+  },
+  {
+    id: 'p1q24',
+    text: 'Nhận định nào sau đây là đúng về bản Tuyên ngôn Độc lập do Chủ tịch Hồ Chí Minh đọc trước quốc dân tại quảng trường Ba Đình năm 1945?',
+    opts: [
+      'Nhân dân Việt Nam đã giành quyền độc lập từ tay Pháp và Nhật.',
+      'Khẳng định quyền độc lập của Việt Nam cả về pháp lý và thực tiễn.',
+      'Nền độc lập của Việt Nam phụ thuộc vào sự công nhận của quốc tế.',
+      'Cuộc cách mạng dân tộc dân chủ nhân dân ở Việt Nam đã thành công.'
+    ],
+    answer: 1
+  }
+];
+
+const PART2_ORIGINAL = [
+  {
+    id: 'p2q1',
+    intro: 'Cho những thông tin trong bảng sau đây:',
+    table: [
+      { time: '1981', act: 'Công bố Sách trắng khẳng định chủ quyền lãnh hải, lãnh thổ Việt Nam.' },
+      { time: '1982', act: 'Việt Nam thành lập huyện đảo Hoàng Sa.' },
+      { time: '1988', act: 'Quân Trung Quốc đánh chiếm đảo Gạc Ma của Việt Nam.' },
+      { time: '2014', act: 'Trung Quốc dùng giàn khoan Hải Dương 981 xâm phạm chủ quyền biển đảo của Việt Nam.' }
+    ],
+    subs: [
+      { label: 'a', text: 'Tư liệu đề cập đến những hoạt động đầu tiên trong quá trình xác lập chủ quyền trên biển Đông của Việt Nam.', answer: false },
+      { label: 'b', text: 'Việt Nam có chủ quyền đối với hai quần đảo Hoàng Sa và Trường Sa do đã công bố Sách trắng năm 1981.', answer: false },
+      { label: 'c', text: 'Sau năm 1988, Trung Quốc đã đánh chiếm toàn bộ và tuyên bố chủ quyền đối với quần đảo Trường Sa.', answer: false },
+      { label: 'd', text: 'Hành động xâm phạm chủ quyền biển đảo Việt Nam của Trung Quốc đã vi phạm nghiêm trọng luật pháp quốc tế.', answer: true }
+    ]
+  },
+  {
+    id: 'p2q2',
+    intro: 'Cho đoạn tư liệu sau đây:',
+    quote: `"Thắng lợi của cách mạng Trung Quốc năm 1949 đã mở ra bước đột phá đầu tiên, phá vỡ âm mưu khống chế Trung Quốc của Mĩ và những đặc quyền của Liên Xô ở vùng Đông Bắc Trung Quốc. Đồng thời, sự lớn mạnh của các nước Tây Âu, Nhật Bản cũng làm suy giảm vị trí và ảnh hưởng của Mĩ trong hệ thống tư bản chủ nghĩa".`,
+    source: '(Trần Thị Vinh (chủ biên), Lịch sử thế giới hiện đại, Quyển 2, NXB Đại học Sư phạm, 2016, tr. 94).',
+    subs: [
+      { label: 'a', text: 'Tư liệu đề cập đến quá trình xói mòn của trật tự thế giới hai cực được hình thành sau Chiến tranh thế giới thứ hai.', answer: true },
+      { label: 'b', text: 'Cách mạng Trung Quốc thắng lợi là bước đột phá làm xói mòn trật tự hai cực vì đã phá vỡ thiết chế của trật tự này.', answer: true },
+      { label: 'c', text: 'Với sự lớn mạnh của các nước Tây Âu, Nhật Bản, Mỹ đã đánh mất vị thế siêu cường trong trật tự hai cực Ianta.', answer: false },
+      { label: 'd', text: 'Với sự xói mòn của trật tự hai cực, một xu thế đa cực đã được hình thành trên thế giới trong Chiến tranh lạnh.', answer: false }
+    ]
+  },
+  {
+    id: 'p2q3',
+    intro: 'Cho đoạn tư liệu sau đây:',
+    quote: `"Thời gian Việt Nam tham gia ASEAN tuy chưa phải là dài, song chúng ta có thể tự hào về những đóng góp quan trọng và dấu ấn Việt Nam. Trong 13 năm qua, Việt Nam đã đóng góp quan trọng trong việc xác định các phương hướng hợp tác và tương lai phát triển cũng như trong các quyết sách lớn của ASEAN, góp phần tăng cường đoàn kết và hợp tác cũng như nâng cao vai trò và vị thế quốc tế của Hiệp hội".`,
+    source: '(Học viện Ngoại giao, Việt Nam trong tiến trình hội nhập và phát triển, Nxb. Chính trị quốc gia, Hà Nội, 2009, tr. 394)',
+    subs: [
+      { label: 'a', text: 'Việt Nam gia nhập ASEAN vào năm 1995 và là thành viên thứ bảy của tổ chức này.', answer: true },
+      { label: 'b', text: 'Việt Nam đã có những đóng góp quan trọng trong định hướng phát triển của ASEAN.', answer: true },
+      { label: 'c', text: 'Vị thế quốc tế của ASEAN được nâng cao do quá trình mở rộng thành viên của tổ chức.', answer: false },
+      { label: 'd', text: 'ASEAN được đánh giá là tổ chức hợp tác quốc tế có uy tín thứ hai thế giới sau EU.', answer: false }
+    ]
+  },
+  {
+    id: 'p2q4',
+    intro: 'Cho đoạn tư liệu sau đây:',
+    quote: `"Ghi nhận năm 1990 sẽ đánh dấu 100 năm kỉ niệm ngày sinh của Chủ tịch Hồ Chí Minh, Anh hùng giải phóng dân tộc và Nhà văn hoá kiệt xuất của Việt Nam.\nNhận thấy Chủ tịch Hồ Chí Minh, một biểu tượng xuất sắc của sự khẳng định dân tộc, đã cống hiến trọn đời mình cho sự nghiệp giải phóng dân tộc của nhân dân Việt Nam, góp phần vào cuộc đấu tranh chung của các dân tộc vì hoà bình, độc lập dân tộc, dân chủ và tiến bộ xã hội.`,
+    source: '(Trích: Nghị quyết số 24C/18.65, cuộc họp của Đại hội đồng UNESCO lần thứ 24 ở Pa-ri (Pháp), từ ngày 20-10 đến ngày 20-11-1987)',
+    subs: [
+      { label: 'a', text: 'Tư liệu khẳng định sự tôn vinh của thế giới đối với Chủ tịch Hồ Chí Minh nhân kỷ niệm 100 năm năm sinh.', answer: true },
+      { label: 'b', text: 'Chủ tịch Hồ Chí Minh đã có những đóng góp to lớn cho hòa bình, độc lập, dân chủ và tiến bộ trên thế giới.', answer: true },
+      { label: 'c', text: 'Hồ Chí Minh nhiều tôn giáo trên thế giới tôn vinh như những vị thánh vì đã dâng hiến cả đời cho sự nghiệp giải phóng con người.', answer: false },
+      { label: 'd', text: 'Sự tôn vinh của quốc tế đối với Chủ tịch Hồ Chí Minh là kết quả cuộc vận động ngoại giao của Việt Nam.', answer: false }
+    ]
+  }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let part1Questions = [];
+let part2Questions = [];
+let userAnswers1 = {};  // id -> optIndex (0-3)
+let userAnswers2 = {};  // id+sub -> true/false
+let timerInterval = null;
+let secondsLeft = 45 * 60;
+let submitted = false;
+
+/* ============================================================
+   SHUFFLE
+   ============================================================ */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildPart1Questions() {
+  return shuffle(PART1_ORIGINAL).map(q => {
+    const indices = [0,1,2,3];
+    const shuffledIdx = shuffle(indices);
+    const newAnswer = shuffledIdx.indexOf(q.answer);
+    return {
+      ...q,
+      opts: shuffledIdx.map(i => q.opts[i]),
+      answer: newAnswer,
+      _origOpts: q.opts
+    };
+  });
+}
+
+function buildPart2Questions() {
+  return shuffle(PART2_ORIGINAL);
+}
+
+/* ============================================================
+   RENDER PART 1
+   ============================================================ */
+function renderPart1() {
+  const container = document.getElementById('part1-container');
+  container.innerHTML = '';
+  part1Questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card1-' + q.id;
+
+    const num = document.createElement('div');
+    num.className = 'q-num';
+    num.textContent = `Câu ${qi + 1} / 24`;
+    card.appendChild(num);
+
+    const qt = document.createElement('div');
+    qt.className = 'q-text';
+    qt.textContent = q.text;
+    card.appendChild(qt);
+
+    const opts = document.createElement('div');
+    opts.className = 'options';
+    const labels = ['A', 'B', 'C', 'D'];
+    q.opts.forEach((opt, oi) => {
+      const lbl = document.createElement('label');
+      lbl.className = 'opt';
+      lbl.id = `opt-${q.id}-${oi}`;
+      lbl.innerHTML = `<input type="radio" name="${q.id}" value="${oi}"> <span><strong>${labels[oi]}.</strong> ${opt}</span>`;
+      lbl.querySelector('input').addEventListener('change', () => {
+        userAnswers1[q.id] = oi;
+        document.querySelectorAll(`label[id^="opt-${q.id}-"]`).forEach(l => l.classList.remove('selected'));
+        lbl.classList.add('selected');
+        card.classList.add('answered');
+        updateProgress();
+      });
+      opts.appendChild(lbl);
+    });
+    card.appendChild(opts);
+
+    const mark = document.createElement('div');
+    mark.className = 'review-mark';
+    mark.id = 'mark1-' + q.id;
+    card.appendChild(mark);
+
+    container.appendChild(card);
+  });
+}
+
+/* ============================================================
+   RENDER PART 2
+   ============================================================ */
+function renderPart2() {
+  const container = document.getElementById('part2-container');
+  container.innerHTML = '';
+  part2Questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card2-' + q.id;
+
+    const num = document.createElement('div');
+    num.className = 'q-num';
+    num.textContent = `Câu ${qi + 1} / 4 (Phần II)`;
+    card.appendChild(num);
+
+    const qt = document.createElement('div');
+    qt.className = 'q-text';
+
+    // Intro text
+    const introSpan = document.createElement('span');
+    introSpan.textContent = q.intro;
+    qt.appendChild(introSpan);
+
+    // Table or Quote
+    if (q.table) {
+      const tbl = document.createElement('table');
+      tbl.style.cssText = 'width:100%;border-collapse:collapse;margin:10px 0 8px;font-size:0.88rem;';
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr style="background:#1a1208;color:#d4a017;"><th style="padding:7px 10px;border:1px solid #d5c5a1;text-align:left">Thời gian</th><th style="padding:7px 10px;border:1px solid #d5c5a1;text-align:left">Hoạt động</th></tr>';
+      tbl.appendChild(thead);
+      const tbody = document.createElement('tbody');
+      q.table.forEach((row, ri) => {
+        const tr = document.createElement('tr');
+        tr.style.background = ri % 2 === 0 ? '#fff' : '#fdf6e3';
+        tr.innerHTML = `<td style="padding:7px 10px;border:1px solid #d5c5a1;font-weight:600;white-space:nowrap">${row.time}</td><td style="padding:7px 10px;border:1px solid #d5c5a1">${row.act}</td>`;
+        tbody.appendChild(tr);
+      });
+      tbl.appendChild(tbody);
+      qt.appendChild(tbl);
+    }
+    if (q.quote) {
+      const bq = document.createElement('blockquote');
+      bq.style.whiteSpace = 'pre-line';
+      bq.textContent = q.quote;
+      qt.appendChild(bq);
+    }
+    if (q.source) {
+      const src = document.createElement('span');
+      src.className = 'source-note';
+      src.textContent = q.source;
+      qt.appendChild(src);
+    }
+    card.appendChild(qt);
+
+    // True/False table
+    const tbl2 = document.createElement('table');
+    tbl2.className = 'tf-table';
+    const thead2 = document.createElement('thead');
+    thead2.innerHTML = '<tr><th style="width:32px">Ý</th><th>Nội dung</th><th style="width:160px">Chọn đáp án</th></tr>';
+    tbl2.appendChild(thead2);
+    const tbody2 = document.createElement('tbody');
+
+    q.subs.forEach(sub => {
+      const key = q.id + '-' + sub.label;
+      const tr = document.createElement('tr');
+      const tdLabel = document.createElement('td');
+      tdLabel.style.cssText = 'text-align:center;font-weight:700;font-family:Playfair Display,serif;';
+      tdLabel.textContent = sub.label + ')';
+      const tdText = document.createElement('td');
+      tdText.textContent = sub.text;
+      const tdBtns = document.createElement('td');
+      tdBtns.style.textAlign = 'center';
+
+      const btnTrue = document.createElement('button');
+      btnTrue.className = 'tf-btn';
+      btnTrue.id = `tf-${key}-T`;
+      btnTrue.textContent = '✔ Đúng';
+      btnTrue.onclick = () => selectTF(key, true, q.id);
+
+      const btnFalse = document.createElement('button');
+      btnFalse.className = 'tf-btn';
+      btnFalse.id = `tf-${key}-F`;
+      btnFalse.textContent = '✘ Sai';
+      btnFalse.onclick = () => selectTF(key, false, q.id);
+
+      const group = document.createElement('div');
+      group.className = 'tf-radio-group';
+      group.appendChild(btnTrue);
+      group.appendChild(btnFalse);
+      tdBtns.appendChild(group);
+
+      tr.appendChild(tdLabel);
+      tr.appendChild(tdText);
+      tr.appendChild(tdBtns);
+      tbody2.appendChild(tr);
+    });
+    tbl2.appendChild(tbody2);
+    card.appendChild(tbl2);
+
+    const mark = document.createElement('div');
+    mark.className = 'review-mark';
+    mark.id = 'mark2-' + q.id;
+    card.appendChild(mark);
+
+    container.appendChild(card);
+  });
+}
+
+function selectTF(key, val, qId) {
+  if (submitted) return;
+  userAnswers2[key] = val;
+  const T = document.getElementById(`tf-${key}-T`);
+  const F = document.getElementById(`tf-${key}-F`);
+  T.className = 'tf-btn' + (val === true ? ' selected-true' : '');
+  F.className = 'tf-btn' + (val === false ? ' selected-false' : '');
+  updateProgress();
+  // check if all 4 subs answered for that card
+  const q = part2Questions.find(q => q.id === qId);
+  if (q) {
+    const allDone = q.subs.every(s => userAnswers2[q.id + '-' + s.label] !== undefined);
+    const card = document.getElementById('card2-' + qId);
+    if (allDone && card) card.classList.add('answered');
+  }
+}
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+function updateProgress() {
+  const done1 = Object.keys(userAnswers1).length;
+  const done2 = Object.keys(userAnswers2).length;
+  const total = 24 + 16; // 24 part1 + 16 subs
+  const done = done1 + done2;
+  document.getElementById('progress-text').textContent = `${done} / ${total} ý đã làm`;
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer() {
+  secondsLeft = 45 * 60;
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
+    const disp = document.getElementById('timer-display');
+    disp.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (secondsLeft <= 300) disp.classList.add('urgent');
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      if (!submitted) submitQuiz(true); // auto = true
+    }
+  }, 1000);
+}
+
+/* ============================================================
+   SUBMIT (nâng cấp với modal xịn)
+   ============================================================ */
+function submitQuiz(auto = false) {
+  if (submitted) return;
+
+  // Tính số câu chưa trả lời
+  const done1 = Object.keys(userAnswers1).length;
+  const done2 = Object.keys(userAnswers2).length;
+  const totalUnanswered = (24 - done1) + (16 - done2);
+
+  // Nếu không phải auto và còn câu chưa làm -> hiện modal
+  if (!auto && totalUnanswered > 0) {
+    // Cập nhật nội dung modal
+    document.getElementById('modalUnansweredCount').textContent = totalUnanswered;
+    document.getElementById('submitConfirmModal').classList.add('show');
+    return; // chờ người dùng xử lý modal
+  }
+
+  // Nếu auto hoặc không còn unanswered -> nộp bài luôn
+  performSubmit(auto);
+}
+
+// Hàm nộp bài thực sự
+function performSubmit(auto) {
+  submitted = true;
+  clearInterval(timerInterval);
+  document.getElementById('timer-display').style.color = '#888';
+  document.getElementById('submit-btn').disabled = true;
+
+  // Disable tất cả input
+  document.querySelectorAll('input[type="radio"]').forEach(i => i.disabled = true);
+  // Disable tất cả nút TF
+  document.querySelectorAll('.tf-btn').forEach(btn => btn.style.pointerEvents = 'none');
+
+  const { score1, score2, details2 } = calculateScore();
+  showReview(score1, score2, details2);
+}
+
+/* ============================================================
+   Xử lý modal
+   ============================================================ */
+document.getElementById('modalCancelBtn').addEventListener('click', function() {
+  document.getElementById('submitConfirmModal').classList.remove('show');
+});
+
+document.getElementById('modalSubmitBtn').addEventListener('click', function() {
+  document.getElementById('submitConfirmModal').classList.remove('show');
+  performSubmit(false); // không auto
+});
+
+// Click vào overlay cũng đóng modal (tiện lợi)
+document.getElementById('submitConfirmModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.classList.remove('show');
+  }
+});
+
+/* ============================================================
+   SCORING
+   ============================================================ */
+function calculateScore() {
+  // Part 1: 24 × 0.25
+  let score1 = 0;
+  part1Questions.forEach(q => {
+    if (userAnswers1[q.id] === q.answer) score1 += 0.25;
+  });
+
+  // Part 2: 4 × up to 1.0
+  let score2 = 0;
+  const details2 = {};
+  part2Questions.forEach(q => {
+    let correct = 0;
+    q.subs.forEach(sub => {
+      const key = q.id + '-' + sub.label;
+      if (userAnswers2[key] === sub.answer) correct++;
+    });
+    details2[q.id] = correct;
+    if (correct === 4) score2 += 1.0;
+    else if (correct === 3) score2 += 0.5;
+    else if (correct === 2) score2 += 0.25;
+    else if (correct === 1) score2 += 0.1;
+  });
+
+  return { score1, score2, details2 };
+}
+
+/* ============================================================
+   REVIEW
+   ============================================================ */
+function showReview(score1, score2, details2) {
+  const total = +(score1 + score2).toFixed(2);
+
+  // Part 1 review
+  part1Questions.forEach(q => {
+    const userAns = userAnswers1[q.id];
+    const labels = ['A', 'B', 'C', 'D'];
+    q.opts.forEach((_, oi) => {
+      const lbl = document.getElementById(`opt-${q.id}-${oi}`);
+      if (!lbl) return;
+      lbl.classList.remove('selected');
+      if (oi === q.answer) lbl.classList.add('correct');
+      else if (oi === userAns && userAns !== q.answer) lbl.classList.add('wrong');
+    });
+    const mark = document.getElementById('mark1-' + q.id);
+    if (mark) {
+      if (userAns === q.answer) {
+        mark.className = 'review-mark correct-mark';
+        mark.textContent = `✔ Đúng — Đáp án: ${labels[q.answer]}`;
+      } else if (userAns === undefined) {
+        mark.className = 'review-mark wrong-mark';
+        mark.textContent = `⚠ Chưa trả lời — Đáp án đúng: ${labels[q.answer]}`;
+      } else {
+        mark.className = 'review-mark wrong-mark';
+        mark.textContent = `✘ Sai — Bạn chọn: ${labels[userAns]} | Đáp án đúng: ${labels[q.answer]}`;
+      }
+    }
+  });
+
+  // Part 2 review
+  part2Questions.forEach(q => {
+    const correct = details2[q.id];
+    q.subs.forEach(sub => {
+      const key = q.id + '-' + sub.label;
+      const userVal = userAnswers2[key];
+      const isCorrect = userVal === sub.answer;
+      const T = document.getElementById(`tf-${key}-T`);
+      const F = document.getElementById(`tf-${key}-F`);
+      if (T) T.className = 'tf-btn';
+      if (F) F.className = 'tf-btn';
+      // show correct answer
+      const correctBtn = sub.answer ? T : F;
+      if (correctBtn) correctBtn.classList.add('correct-reveal');
+      // show user's wrong answer
+      if (userVal !== undefined && !isCorrect) {
+        const wrongBtn = userVal ? T : F;
+        if (wrongBtn) wrongBtn.classList.add('wrong-reveal');
+      }
+    });
+    const qScore = correct === 4 ? 1.0 : correct === 3 ? 0.5 : correct === 2 ? 0.25 : correct === 1 ? 0.1 : 0;
+    const mark = document.getElementById('mark2-' + q.id);
+    if (mark) {
+      if (correct === 4) {
+        mark.className = 'review-mark correct-mark';
+        mark.textContent = `✔ Hoàn toàn đúng — +1.0 điểm`;
+      } else if (correct === 0) {
+        mark.className = 'review-mark wrong-mark';
+        mark.textContent = `✘ Không có ý nào đúng — +0 điểm`;
+      } else {
+        mark.className = 'review-mark partial-mark';
+        mark.textContent = `◑ Đúng ${correct}/4 ý — +${qScore.toFixed(2)} điểm`;
+      }
+    }
+  });
+
+  // Result panel
+  document.getElementById('score-val').textContent = total.toFixed(2) + ' / 10';
+  let grade = '';
+  if (total >= 8) grade = '🏆 Xuất sắc';
+  else if (total >= 6.5) grade = '👍 Khá';
+  else if (total >= 5) grade = '📘 Trung bình';
+  else grade = '📖 Cần cố gắng thêm';
+  document.getElementById('score-detail').textContent = grade;
+
+  const tbody = document.getElementById('score-tbody');
+  tbody.innerHTML = `
+    <tr><td>Phần I (24 câu × 0.25đ)</td><td>${score1.toFixed(2)}đ</td><td>6.0đ</td></tr>
+    <tr><td>Phần II (4 câu)</td><td>${score2.toFixed(2)}đ</td><td>4.0đ</td></tr>
+    <tr style="font-weight:700;color:#d4a017"><td>Tổng cộng</td><td>${total.toFixed(2)}đ</td><td>10.0đ</td></tr>
+  `;
+
+  document.getElementById('result-panel').style.display = 'block';
+  document.getElementById('result-panel').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ============================================================
+   REDO
+   ============================================================ */
+function redoQuiz() {
+  submitted = false;
+  userAnswers1 = {};
+  userAnswers2 = {};
+  clearInterval(timerInterval);
+  document.getElementById('result-panel').style.display = 'none';
+  document.getElementById('submit-btn').disabled = false;
+  document.getElementById('timer-display').classList.remove('urgent');
+  document.getElementById('timer-display').style.color = '';
+  document.getElementById('submitConfirmModal').classList.remove('show');
+
+  part1Questions = buildPart1Questions();
+  part2Questions = buildPart2Questions();
+  renderPart1();
+  renderPart2();
+  updateProgress();
+  startTimer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init() {
+  part1Questions = buildPart1Questions();
+  part2Questions = buildPart2Questions();
+  renderPart1();
+  renderPart2();
+  updateProgress();
+  startTimer();
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
